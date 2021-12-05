@@ -4,6 +4,10 @@ const { StatusCodes } = require('http-status-codes');
 const boardsService = require('./board.service');
 const { messages } = require('../../common/constants');
 
+const tasksRouter = require('../tasks/task.router');
+
+router.use('/:boardId/tasks', tasksRouter);
+
 router
   .route('/')
   .get(async (req, res) => {

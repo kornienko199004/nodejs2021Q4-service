@@ -27,6 +27,7 @@ const deleteBoard = async (id) => {
   const index = data.findIndex((item) => item.id === id);
   if (index > -1) {
     const board = data[index];
+    // board.removeAllTasks();
     data.splice(index, 1);
     return board;
   }

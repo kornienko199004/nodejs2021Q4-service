@@ -1,8 +1,8 @@
 const { param } = require('express-validator');
 const uuid = require('uuid');
 
-const idValidation = () => 
-param('id', 'id isn\'t valid').custom(value =>
+const idValidation = (name = 'id') => 
+param(name, `${name} isn't valid`).custom(value =>
   new Promise((resolve, reject) => {
     if (uuid.validate(value)) {
       resolve();
@@ -11,4 +11,12 @@ param('id', 'id isn\'t valid').custom(value =>
   })
 );
 
-module.exports = { idValidation };
+const idValidationFn = (value) =>
+new Promise((resolve, reject) => {
+  if (uuid.validate(value)) {
+    resolve();
+  }
+  reject();
+});
+
+module.exports = { idValidation, idValidationFn };
