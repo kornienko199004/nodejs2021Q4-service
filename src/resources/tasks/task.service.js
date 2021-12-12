@@ -4,9 +4,11 @@ const { idValidation } = require('../../utils/validation.helper');
 
 const getAll = (boardId) => tasksRepo.getAll(boardId);
 const create = (value) => tasksRepo.create(value);
-const getTask = (boardId, id) => tasksRepo.getTask(boardId, id);
-const updateTask = (boardId, taskId, task) => tasksRepo.updateTask(boardId, taskId, task);
-const removeTask = (boardId, taskId) => tasksRepo.removeTask(boardId, taskId);
+const getTask = (id) => tasksRepo.getTask(id);
+const updateTask = (taskId, task) => tasksRepo.updateTask(taskId, task);
+const removeTask = (taskId) => tasksRepo.removeTask(taskId);
+const deleteTasksByBoardId = (boardId) => tasksRepo.deleteTasksByBoardId(boardId);
+const unassignUser = (userId) => tasksRepo.unassignUser(userId);
 
 const validate = (method) => {
   switch (method) {
@@ -37,4 +39,4 @@ const validate = (method) => {
   }
 }
 
-module.exports = { getAll, validate, create, getTask, updateTask, removeTask };
+module.exports = { getAll, validate, create, getTask, updateTask, removeTask, deleteTasksByBoardId, unassignUser };

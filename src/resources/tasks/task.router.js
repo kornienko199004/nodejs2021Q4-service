@@ -38,7 +38,7 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
   }
 
   const id = req.params?.id;
-  const task = await tasksService.getTask(req.params?.boardId, id);
+  const task = await tasksService.getTask(id);
 
   if (task) {
     return res.json(task);
@@ -51,7 +51,7 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
   }
   const id = req.params?.id;
-  const task = await tasksService.updateTask(req.params?.boardId, id, req.body);
+  const task = await tasksService.updateTask(id, req.body);
 
   if (task) {
     return res.json(task);
@@ -64,8 +64,7 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
   }
   const id = req.params?.id;
-  const task = await tasksService.removeTask(req.params?.boardId, id);
-  console.log(task);
+  const task = await tasksService.removeTask(id);
   if (task) {
     return res.status(StatusCodes.NO_CONTENT).json({ message: messages.deleted('Task') });
   }

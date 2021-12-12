@@ -1,12 +1,17 @@
 const { body } = require('express-validator');
 const boardsRepo = require('./board.memory.repository');
+const tasksService = require('../tasks/task.service');
 const { idValidation } = require('../../utils/validation.helper');
 
 const getAll = () => boardsRepo.getAll();
 const create = (value) => boardsRepo.create(value);
 const getBoard = (id) => boardsRepo.getBoard(id);
 const updateBoard = (id, user) => boardsRepo.updateBoard(id, user);
-const deleteBoard = (id) => boardsRepo.deleteBoard(id);
+const deleteBoard = (boardId) => {
+  tasksService.deleteTasksByBoardId(boardId);
+  return boardsRepo.deleteBoard(boardId);
+};
+
 
 const validate = (method) => {
   switch (method) {

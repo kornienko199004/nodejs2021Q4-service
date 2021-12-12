@@ -3,7 +3,6 @@ const Board = require('./board.model');
 const data = [];
 
 const getAll = async () =>
-  // TODO: mock implementation. should be replaced during task development
   data;
 
 const create = async (value) => {
@@ -27,7 +26,6 @@ const deleteBoard = async (id) => {
   const index = data.findIndex((item) => item.id === id);
   if (index > -1) {
     const board = data[index];
-    // board.removeAllTasks();
     data.splice(index, 1);
     return board;
   }

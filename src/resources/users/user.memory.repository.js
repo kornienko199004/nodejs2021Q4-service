@@ -1,12 +1,8 @@
-const User = require("./user.model");
+const User = require('./user.model');
 
 const data = [];
 
-const getAll = async () => 
-  // TODO: mock implementation. should be replaced during task development
-   data;
-;
-
+const getAll = async () => data;
 const create = async (value) => {
   const user = new User(value);
   data.push(user);

@@ -1,45 +1,46 @@
 const Task = require('./task.model');
-const boardsService = require('../boards/board.service');
 
-const data = [];
+let tasks = [];
 
-const getAll = async (boardId) => {
-  const board = await boardsService.getBoard(boardId);
-  return board.getTasks();
-}
+const getAll = async (boardId) => tasks.filter((task) => task.boardId === boardId)
+
 
 const create = async (value) => {
   const task = new Task(value);
-  data.push(task);
-  const board = await boardsService.getBoard(task.boardId);
-  board.addTask(task);
+  tasks.push(task);
   return task;
 };
 
-const getTask = async (boardId, taskId) => {
-  const board = await boardsService.getBoard(boardId);
-  return board.getTask(taskId);
-}
-// const getTask = async (id) => data.find((item) => item.id === id);
+const getTask = async (taskId) => tasks.find((task) => task.id === taskId);
 
-const removeTaskFromWithBoard = async (id) => {
-  const index = data.findIndex((item) => item.id === id);
+const removeTask = async (taskId) => {
+  const index = tasks.findIndex((task) => task.id === taskId);
   if (index > -1) {
-    const task = data[index];
-    data.splice(index, 1);
-    return task;
+    return tasks.splice(index, 1);
   }
   return null;
 }
 
-const removeTask = async (boardId, id) => {
-  const board = await boardsService.getBoard(boardId);
-  return board.removeTask(id);
-}
-
-const updateTask = async (boardId, taskId, task) => {
-  const board = await boardsService.getBoard(boardId);
-  return board.updateTask(taskId, task);
+const updateTask = async (taskId, task) => {
+  const index = tasks.findIndex((item) => item.id === taskId);
+  if (index > -1) {
+    tasks[index] = task;
+    return getTask(taskId);
+  }
+  return null;
 };
 
-module.exports = { getAll, create, getTask, updateTask, removeTaskFromWithBoard, removeTask };
+const deleteTasksByBoardId = (boardId) => {
+  tasks = tasks.filter((task) => task.boardId !== boardId);
+};
+
+const unassignUser = (userId) => {
+  tasks = tasks.map((task) => {
+    if (task.userId === userId) {
+      return { ...task, userId: null };
+    }
+    return task;
+  })
+}
+
+module.exports = { getAll, create, getTask, updateTask, removeTask, deleteTasksByBoardId, unassignUser };
