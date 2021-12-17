@@ -1,10 +1,11 @@
-const router = require('express').Router();
-const { validationResult } = require('express-validator');
-const { StatusCodes } = require('http-status-codes');
-const boardsService = require('./board.service');
-const { messages } = require('../../common/constants');
+import express from 'express';
+import { validationResult } from 'express-validator';
+import { StatusCodes } from 'http-status-codes';
+import { messages } from '../../common/constants';
+import * as boardsService from './board.service';
+import tasksRouter from '../tasks/task.router';
 
-const tasksRouter = require('../tasks/task.router');
+const router = express.Router();
 
 router.use('/:boardId/tasks', tasksRouter);
 

@@ -1,6 +1,10 @@
-const uuid = require('uuid');
+import uuid from 'uuid';
 
-class Column {
+export class Column {
+  id: string;
+  title: string;
+  order: number;
+
   constructor({
     id = uuid.v4(),
     title = 'title',
@@ -9,7 +13,6 @@ class Column {
     this.id = id;
     this.title = title;
     this.order = order;
-    this.tasks = [];
   }
 }
 

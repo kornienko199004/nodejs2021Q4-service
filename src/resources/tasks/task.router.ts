@@ -18,7 +18,7 @@ router.use(async (req, res, next) => {
 router
   .route('/')
   .get(async (req, res) => {
-    const tasks = await tasksService.getAll(req.params?.boardId);
+    const tasks = await tasksService.getAll((req.params as any)?.boardId);
     res.json(tasks);
   })
   .post(tasksService.validate('create'), async (req, res) => {
@@ -73,4 +73,4 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Task') });
 });
 
-module.exports = router;
+export default router;

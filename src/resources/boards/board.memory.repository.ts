@@ -1,6 +1,6 @@
-const Board = require('./board.model');
+import { Board } from './board.model';
 
-const data = [];
+const data: Board[] = [];
 
 const getAll = async () =>
   data;
@@ -32,4 +32,4 @@ const deleteBoard = async (id) => {
   return null;
 };
 
-module.exports = { getAll, create, getBoard, updateBoard, deleteBoard };
+export { getAll, create, getBoard, updateBoard, deleteBoard };
