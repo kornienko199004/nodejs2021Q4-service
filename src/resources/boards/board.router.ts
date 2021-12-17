@@ -68,4 +68,4 @@ router.route('/:id').get(boardsService.validate('getBoard'), async (req, res) =>
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Board') });
 });
 
-module.exports = router;
+export default router;

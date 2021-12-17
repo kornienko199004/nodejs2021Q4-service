@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import { v4 } from 'uuid';
 
 export class Column {
   id: string;
@@ -6,7 +6,7 @@ export class Column {
   order: number;
 
   constructor({
-    id = uuid.v4(),
+    id = v4(),
     title = 'title',
     order = 0,
   } = {}) {
@@ -15,5 +15,3 @@ export class Column {
     this.order = order;
   }
 }
-
-module.exports = Column;

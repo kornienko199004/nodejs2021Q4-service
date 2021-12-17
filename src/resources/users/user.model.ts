@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import { v4 } from 'uuid';
 
 export class User {
   id: string;
@@ -7,7 +7,7 @@ export class User {
   password: string;
 
   constructor({
-    id = uuid.v4(),
+    id = v4(),
     name = 'USER',
     login = 'user',
     password = 'P@55w0rd'

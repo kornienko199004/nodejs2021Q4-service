@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import { v4 } from 'uuid';
 
 export class Task {
   id: string;
@@ -10,7 +10,7 @@ export class Task {
   order: number;
 
   constructor({
-    id = uuid.v4(),
+    id = v4(),
     title = 'title',
     description = 'description',
     order = 0,

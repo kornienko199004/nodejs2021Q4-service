@@ -1,10 +1,10 @@
 import { param } from 'express-validator';
-import uuid from 'uuid';
+import { validate } from 'uuid';
 
 const idValidation = (name = 'id') => 
 param(name, `${name} isn't valid`).custom(value =>
   new Promise((resolve, reject) => {
-    if (uuid.validate(value)) {
+    if (validate(value)) {
       resolve(null);
     }
     reject();
@@ -13,7 +13,7 @@ param(name, `${name} isn't valid`).custom(value =>
 
 const idValidationFn = (value) =>
 new Promise((resolve, reject) => {
-  if (uuid.validate(value)) {
+  if (validate(value)) {
     resolve(null);
   }
   reject();
