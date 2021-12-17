@@ -1,9 +1,11 @@
-const router = require('express').Router();
-const { validationResult  } = require('express-validator');
-const { StatusCodes } = require('http-status-codes');
-const User = require('./user.model');
-const usersService = require('./user.service');
-const { messages } = require('../../common/constants');
+import express from 'express';
+import { validationResult } from 'express-validator';
+import { StatusCodes } from 'http-status-codes';
+import { User } from './user.model';
+import * as usersService from './user.service';
+import { messages } from '../../common/constants';
+
+const router = express.Router();
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
@@ -61,4 +63,4 @@ router.route('/:id').get(usersService.validate('getUser'), async (req, res) => {
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const User = require('./user.model');
+import { User } from './user.model';
 
-const data = [];
+const data: User[] = [];
 
 const getAll = async () => data;
 const create = async (value) => {
