@@ -1,16 +1,16 @@
-const { body } = require('express-validator');
-const tasksRepo = require('./task.memory.repository');
-const { idValidation } = require('../../utils/validation.helper');
+import { body } from 'express-validator';
+import * as tasksRepo from './task.memory.repository';
+import { idValidation } from '../../utils/validation.helper';
 
-const getAll = (boardId) => tasksRepo.getAll(boardId);
-const create = (value) => tasksRepo.create(value);
-const getTask = (id) => tasksRepo.getTask(id);
-const updateTask = (taskId, task) => tasksRepo.updateTask(taskId, task);
-const removeTask = (taskId) => tasksRepo.removeTask(taskId);
-const deleteTasksByBoardId = (boardId) => tasksRepo.deleteTasksByBoardId(boardId);
-const unassignUser = (userId) => tasksRepo.unassignUser(userId);
+export const getAll = (boardId) => tasksRepo.getAll(boardId);
+export const create = (value) => tasksRepo.create(value);
+export const getTask = (id) => tasksRepo.getTask(id);
+export const updateTask = (taskId, task) => tasksRepo.updateTask(taskId, task);
+export const removeTask = (taskId) => tasksRepo.removeTask(taskId);
+export const deleteTasksByBoardId = (boardId) => tasksRepo.deleteTasksByBoardId(boardId);
+export const unassignUser = (userId) => tasksRepo.unassignUser(userId);
 
-const validate = (method) => {
+export const validate = (method) => {
   switch (method) {
     case 'create': {
      return [
@@ -38,5 +38,3 @@ const validate = (method) => {
       return [];
   }
 }
-
-module.exports = { getAll, validate, create, getTask, updateTask, removeTask, deleteTasksByBoardId, unassignUser };

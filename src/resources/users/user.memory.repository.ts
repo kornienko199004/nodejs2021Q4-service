@@ -30,4 +30,4 @@ const deleteUser = async (id) => {
   return null;
 };
 
-module.exports = { getAll, create, getUser, updateUser, deleteUser };
+export { getAll, create, getUser, updateUser, deleteUser };

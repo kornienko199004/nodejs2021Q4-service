@@ -1,7 +1,8 @@
-const { body } = require('express-validator');
-const boardsRepo = require('./board.memory.repository');
-const tasksService = require('../tasks/task.service');
-const { idValidation } = require('../../utils/validation.helper');
+
+import { body } from 'express-validator';
+import * as boardsRepo from './board.memory.repository';
+import { idValidation } from '../../utils/validation.helper';
+import * as tasksService from '../tasks/task.service';
 
 const getAll = () => boardsRepo.getAll();
 const create = (value) => boardsRepo.create(value);
@@ -23,7 +24,7 @@ const validate = (method) => {
             if (!value.some((column) => Object.hasOwnProperty.call(column, 'title') && Object.hasOwnProperty.call(column, 'order'))) {
               reject();
             }
-            resolve();
+            resolve(null);
           })),
        ];
     }
@@ -45,4 +46,4 @@ const validate = (method) => {
   }
 }
 
-module.exports = { getAll, validate, create, getBoard, updateBoard, deleteBoard };
+export { getAll, validate, create, getBoard, updateBoard, deleteBoard };

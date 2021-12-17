@@ -1,11 +1,11 @@
-const { param } = require('express-validator');
-const uuid = require('uuid');
+import { param } from 'express-validator';
+import uuid from 'uuid';
 
 const idValidation = (name = 'id') => 
 param(name, `${name} isn't valid`).custom(value =>
   new Promise((resolve, reject) => {
     if (uuid.validate(value)) {
-      resolve();
+      resolve(null);
     }
     reject();
   })
@@ -14,9 +14,9 @@ param(name, `${name} isn't valid`).custom(value =>
 const idValidationFn = (value) =>
 new Promise((resolve, reject) => {
   if (uuid.validate(value)) {
-    resolve();
+    resolve(null);
   }
   reject();
 });
 
-module.exports = { idValidation, idValidationFn };
+export { idValidation, idValidationFn };

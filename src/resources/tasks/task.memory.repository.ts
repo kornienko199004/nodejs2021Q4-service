@@ -1,6 +1,6 @@
-const Task = require('./task.model');
+import { Task } from './task.model';
 
-let tasks = [];
+let tasks: Task[] = [];
 
 const getAll = async (boardId) => tasks.filter((task) => task.boardId === boardId)
 
@@ -43,4 +43,4 @@ const unassignUser = (userId) => {
   })
 }
 
-module.exports = { getAll, create, getTask, updateTask, removeTask, deleteTasksByBoardId, unassignUser };
+export { getAll, create, getTask, updateTask, removeTask, deleteTasksByBoardId, unassignUser };

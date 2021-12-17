@@ -1,9 +1,11 @@
-const router = require('express').Router({ mergeParams: true });
-const { validationResult } = require('express-validator');
-const { StatusCodes } = require('http-status-codes');
-const tasksService = require('./task.service');
-const { messages } = require('../../common/constants');
-const boardsService = require('../boards/board.service');
+import express from 'express';
+import { validationResult } from 'express-validator';
+import { StatusCodes } from 'http-status-codes';
+import * as tasksService from './task.service';
+import * as boardsService from '../boards/board.service';
+import { messages } from '../../common/constants';
+
+const router = express.Router({ mergeParams: true });
 
 router.use(async (req, res, next) => {
   const board = await boardsService.getBoard(req.params?.boardId);

@@ -1,7 +1,7 @@
-const { body } = require('express-validator');
-const usersRepo = require('./user.memory.repository');
-const tasksService = require('../tasks/task.service');
-const { idValidation } = require('../../utils/validation.helper');
+import { body } from 'express-validator';
+import * as usersRepo from './user.memory.repository';
+import * as tasksService from '../tasks/task.service';
+import { idValidation } from '../../utils/validation.helper';
 
 export const getAll = () => usersRepo.getAll();
 export const create = (value) => usersRepo.create(value);
@@ -38,5 +38,3 @@ export const validate = (method) => {
       return [];
   }
 }
-
-// module.exports = { getAll, validate, create, getUser, updateUser, deleteUser };
