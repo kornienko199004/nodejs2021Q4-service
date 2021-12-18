@@ -1,12 +1,19 @@
 import { v4 } from 'uuid';
+import { TaskParams } from '../../models/interfaces';
 
 export class Task {
   id: string;
+
   title: string;
+
   description: string;
+
   userId: string | null;
+
   boardId: string | null;
+
   columnId: string | null;
+
   order: number;
 
   constructor({
@@ -17,7 +24,7 @@ export class Task {
     userId,
     boardId,
     columnId,
-  }) {
+  }: TaskParams) {
     this.id = id;
     this.title = title;
     this.description = description;

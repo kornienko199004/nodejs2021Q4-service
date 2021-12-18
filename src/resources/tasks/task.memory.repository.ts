@@ -1,27 +1,28 @@
+import { TaskParams } from '../../models/interfaces';
 import { Task } from './task.model';
 
 let tasks: Task[] = [];
 
-const getAll = async (boardId) => tasks.filter((task) => task.boardId === boardId)
+const getAll = async (boardId: string): Promise<Task[]> => tasks.filter((task) => task.boardId === boardId)
 
-
-const create = async (value) => {
+const create = async (value: TaskParams): Promise<Task> => {
   const task = new Task(value);
   tasks.push(task);
   return task;
 };
 
-const getTask = async (taskId) => tasks.find((task) => task.id === taskId);
+const getTask = async (taskId: string): Promise<Task | undefined> => tasks.find((task) => task.id === taskId);
 
-const removeTask = async (taskId) => {
+const removeTask = async (taskId: string): Promise<Task | null> => {
   const index = tasks.findIndex((task) => task.id === taskId);
   if (index > -1) {
-    return tasks.splice(index, 1);
+    const task = tasks.splice(index, 1)[0];
+    return task;
   }
   return null;
 }
 
-const updateTask = async (taskId, task) => {
+const updateTask = async (taskId: string, task: Task): Promise<Task | null | undefined> => {
   const index = tasks.findIndex((item) => item.id === taskId);
   if (index > -1) {
     tasks[index] = task;
@@ -30,11 +31,11 @@ const updateTask = async (taskId, task) => {
   return null;
 };
 
-const deleteTasksByBoardId = (boardId) => {
+const deleteTasksByBoardId = (boardId: string): void => {
   tasks = tasks.filter((task) => task.boardId !== boardId);
 };
 
-const unassignUser = (userId) => {
+const unassignUser = (userId: string): void => {
   tasks = tasks.map((task) => {
     if (task.userId === userId) {
       return { ...task, userId: null };

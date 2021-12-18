@@ -1,7 +1,7 @@
-import { param } from 'express-validator';
+import { param, ValidationChain } from 'express-validator';
 import { validate } from 'uuid';
 
-const idValidation = (name = 'id') => 
+const idValidation = (name = 'id'): ValidationChain => 
 param(name, `${name} isn't valid`).custom(value =>
   new Promise((resolve, reject) => {
     if (validate(value)) {
@@ -11,7 +11,7 @@ param(name, `${name} isn't valid`).custom(value =>
   })
 );
 
-const idValidationFn = (value) =>
+const idValidationFn = (value: string): Promise<null> =>
 new Promise((resolve, reject) => {
   if (validate(value)) {
     resolve(null);

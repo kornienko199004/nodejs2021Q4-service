@@ -1,4 +1,4 @@
 export const messages = {
-  notFound: (name) => `${name} not found`,
-  deleted: (name) => `${name} has been deleted`,
+  notFound: (name: string): string => `${name} not found`,
+  deleted: (name: string): string => `${name} has been deleted`,
 };

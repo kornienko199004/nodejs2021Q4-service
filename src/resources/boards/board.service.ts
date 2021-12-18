@@ -1,27 +1,30 @@
 
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 import * as boardsRepo from './board.memory.repository';
 import { idValidation } from '../../utils/validation.helper';
 import * as tasksService from '../tasks/task.service';
+import { Board } from './board.model';
+import { BoardParams } from '../../models/interfaces';
+import { Column } from './column.model';
 
-const getAll = () => boardsRepo.getAll();
-const create = (value) => boardsRepo.create(value);
-const getBoard = (id) => boardsRepo.getBoard(id);
-const updateBoard = (id, user) => boardsRepo.updateBoard(id, user);
-const deleteBoard = (boardId) => {
+const getAll = (): Promise<Board[]> => boardsRepo.getAll();
+const create = (value: BoardParams): Promise<Board> => boardsRepo.create(value);
+const getBoard = (id: string): Promise<Board | undefined> => boardsRepo.getBoard(id);
+const updateBoard = (id: string, board: Board): Promise<Board | null> => boardsRepo.updateBoard(id, board);
+const deleteBoard = (boardId: string): Promise<Board | null> => {
   tasksService.deleteTasksByBoardId(boardId);
   return boardsRepo.deleteBoard(boardId);
 };
 
 
-const validate = (method) => {
+const validate = (method: string): ValidationChain[] => {
   switch (method) {
     case 'create': {
      return [
         body('title', 'title doesn\'t exists').exists(),
         body('columns', 'columns doesn\'t exists').exists(),
         body('columns', 'all columns should have title and order').custom((value) => new Promise((resolve, reject) => {
-            if (!value.some((column) => Object.hasOwnProperty.call(column, 'title') && Object.hasOwnProperty.call(column, 'order'))) {
+            if (!value.some((column: Column) => Object.hasOwnProperty.call(column, 'title') && Object.hasOwnProperty.call(column, 'order'))) {
               reject();
             }
             resolve(null);

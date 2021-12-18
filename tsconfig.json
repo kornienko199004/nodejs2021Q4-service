@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
+    "strict": true,
     "target": "es6",
     "module": "commonjs",
     "rootDir": "./src",
     "outDir": "./build",
     "esModuleInterop": true,
-    "strict": true,
-    "noImplicitAny": false,
     "lib": ["es6"],
-    "types": ["node"]
+    "types": ["node"],
+    "moduleResolution": "node",
+    "noImplicitAny": true
   }
 }
