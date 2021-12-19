@@ -22,6 +22,11 @@ export class User {
     this.password = password;
   }
 
+  /**
+   * Returns user without password field
+   * @param user User to return
+   * @returns { id: string; name: string; login: string }
+   */
   static toResponse(user: User): { id: string; name: string; login: string } {
     const { id, name, login } = user;
     return { id, name, login };

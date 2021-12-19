@@ -7,16 +7,49 @@ import { Board } from './board.model';
 import { BoardParams } from '../../models/interfaces';
 import { Column } from './column.model';
 
+/**
+ * Returns all boards
+ * @returns Promise<Board[]>
+ */
 const getAll = (): Promise<Board[]> => boardsRepo.getAll();
+
+/**
+ * Creates new board
+ * @param value payload for new board creation
+ * @returns Promise<Board>
+ */
 const create = (value: BoardParams): Promise<Board> => boardsRepo.create(value);
+
+/**
+ * Returns board by id
+ * @param id board id
+ * @returns Promise<Board | undefined>
+ */
 const getBoard = (id: string): Promise<Board | undefined> => boardsRepo.getBoard(id);
+
+/**
+ * Updates board by id
+ * @param id board id
+ * @param board updated board value
+ * @returns Promise<Board | null>
+ */
 const updateBoard = (id: string, board: Board): Promise<Board | null> => boardsRepo.updateBoard(id, board);
+
+/**
+ * Removes board by id
+ * @param id board id
+ * @returns Promise<Board | null>
+ */
 const deleteBoard = (boardId: string): Promise<Board | null> => {
   tasksService.deleteTasksByBoardId(boardId);
   return boardsRepo.deleteBoard(boardId);
 };
 
-
+/**
+ * Returns ValidationChain[]
+ * @param method REST method name
+ * @returns ValidationChain[]
+ */
 const validate = (method: string): ValidationChain[] => {
   switch (method) {
     case 'create': {
