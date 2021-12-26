@@ -2,10 +2,10 @@ import express, { Request, Response } from 'express';
 import swaggerUI from 'swagger-ui-express';
 import path from 'path';
 import YAML from 'yamljs';
+import { finished } from 'stream';
 import userRouter from './resources/users/user.router';
 import boardsRouter from './resources/boards/board.router';
 import { Logger } from './logger/logger';
-import { finished } from 'stream';
 import { ValidationError } from './common/validationError';
 
 

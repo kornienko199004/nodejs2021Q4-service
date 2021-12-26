@@ -1,7 +1,4 @@
-import { Errback, Request, Response } from "express";
-import { finished } from "stream";
-import morgan from 'morgan';
-import { createWriteStream } from "fs";
+import { Request } from "express";
 import { createLogger, format, transports, Logger as WinstonLogger } from 'winston';
 import { ValidationError } from "../common/validationError";
 
@@ -21,12 +18,8 @@ export class Logger {
       ),
       defaultMeta: { service: 'your-service-name' },
       transports: [
-        //
-        // - Write to all logs with level `info` and below to `quick-start-combined.log`.
-        // - Write all logs error (and below) to `quick-start-error.log`.
-        //
-        new transports.File({ filename: 'quick-start-error.log', level: 'error' }),
-        new transports.File({ filename: 'quick-start-combined.log' })
+        new transports.File({ filename: 'errors.log', level: 'error' }),
+        new transports.File({ filename: 'combined.log' })
       ]
     });
   }
@@ -55,19 +48,6 @@ export class Logger {
     }
     this.logger.error(err.message);
   }
-
-  public loggerErrorMiddleware(err: Error, _: Request, res: Response, next: (arg: Error) => unknown): void {
-    if (err instanceof ValidationError) {
-      this.logger.error(err.message);
-      res.status(err.status).json(err.text);
-      return;
-    }
-    next(err);
-  }
-
-  // public static loggerMiddleware(): (req: Request, res: Response, callback: (err?: Error) => void) => void {
-  //   return morgan('combined', {stream: createWriteStream('access.log')})
-  // }
 }
 
 
