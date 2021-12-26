@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { messages } from '../../common/constants';
 import * as boardsService from './board.service';
 import tasksRouter from '../tasks/task.router';
+import { ValidationError } from '../../common/validationError';
 
 const router = express.Router();
 
@@ -18,9 +19,10 @@ router
   .post(boardsService.validate('create'), async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ errors: errors.array() });
+      throw new ValidationError(JSON.stringify(errors.array()));
+      // return res
+      //   .status(StatusCodes.BAD_REQUEST)
+      //   .json({ errors: errors.array() });
     }
 
     const board = await boardsService.create(req.body);
