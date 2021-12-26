@@ -1,10 +1,11 @@
-import express, { Request, Response, Errback } from 'express';
+import express, { Request, Response } from 'express';
 import swaggerUI from 'swagger-ui-express';
 import path from 'path';
 import YAML from 'yamljs';
 import userRouter from './resources/users/user.router';
 import boardsRouter from './resources/boards/board.router';
 import { Logger } from './logger/logger';
+import { finished } from 'stream';
 import { ValidationError } from './common/validationError';
 
 
@@ -15,15 +16,15 @@ const logger = new Logger();
 app.use(express.json());
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-app.use((...args) => logger.loggerMiddleware(...args));
 
-
-app.use((err: Errback, _: Request, res: Response, next: () => unknown) => {
-  if (err instanceof ValidationError) {
-    res.status(err.status).send(err.text);
-    return;
-  }
+app.use((req: Request, res: Response, next: () => unknown) => {
+  const start = Date.now();
   next();
+  finished(res, () => {
+    const ms = Date.now() - start;
+    const { statusCode } = res;
+    logger.logInfo(req, statusCode, ms);
+  })
 });
 
 app.use('/', (req, res, next) => {
@@ -36,5 +37,24 @@ app.use('/', (req, res, next) => {
 
 app.use('/users', userRouter);
 app.use('/boards', boardsRouter);
+
+// app.use((err: Error, _: Request, res: Response, next: () => unknown) => logger.loggerErrorMiddleware(err, _, res, next));
+app.use((err: Error, _: Request, res: Response, next: (arg: Error) => unknown): void => {
+    if (err instanceof ValidationError) {
+      logger.logError(err);
+      res.status(err.status).json({ errors: err.text });
+      return;
+    }
+    next(err);
+  }
+  // public loggerErrorMiddleware(err: Error, _: Request, res: Response, next: (arg: Error) => unknown): void {
+  //   if (err instanceof ValidationError) {
+  //     this.logger.error(err.message);
+  //     res.status(err.status).json(err.text);
+  //     return;
+  //   }
+  //   next(err);
+  // }
+)
 
 export default app;

@@ -1,11 +1,11 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 export class ValidationError extends Error {
   status = StatusCodes.BAD_REQUEST;
 
-  text = getReasonPhrase(this.status);
+  text!: { [k: string]: unknown }[];
 
-  constructor(msg?: string) {
+  constructor(msg: { [k: string]: unknown }[]) {
     super();
     if (msg) {
       this.text = msg;

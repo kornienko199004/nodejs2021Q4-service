@@ -16,23 +16,20 @@ router
     const boards = await boardsService.getAll();
     res.json(boards);
   })
-  .post(boardsService.validate('create'), async (req: Request, res: Response) => {
+  .post(boardsService.validate('create'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new ValidationError(JSON.stringify(errors.array()));
-      // return res
-      //   .status(StatusCodes.BAD_REQUEST)
-      //   .json({ errors: errors.array() });
+      return next(new ValidationError(errors.array()));
     }
 
     const board = await boardsService.create(req.body);
     return res.status(StatusCodes.CREATED).json(board);
   });
 
-router.route('/:id').get(boardsService.validate('getBoard'), async (req: Request, res: Response) => {
+router.route('/:id').get(boardsService.validate('getBoard'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
 
   const id = req.params?.id;
@@ -43,10 +40,10 @@ router.route('/:id').get(boardsService.validate('getBoard'), async (req: Request
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Board') });
 })
-.put(boardsService.validate('updateBoard'), async (req: Request, res: Response) => {
+.put(boardsService.validate('updateBoard'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
   const id = req.params?.id;
   const board = await boardsService.updateBoard(id, req.body);
@@ -56,10 +53,10 @@ router.route('/:id').get(boardsService.validate('getBoard'), async (req: Request
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 })
-.delete(boardsService.validate('deleteBoard'), async (req: Request, res: Response) => {
+.delete(boardsService.validate('deleteBoard'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
   const id = req.params?.id;
   const board = await boardsService.deleteBoard(id);
