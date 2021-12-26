@@ -1,11 +1,13 @@
-const router = require('express').Router({ mergeParams: true });
-const { validationResult } = require('express-validator');
-const { StatusCodes } = require('http-status-codes');
-const tasksService = require('./task.service');
-const { messages } = require('../../common/constants');
-const boardsService = require('../boards/board.service');
+import express, { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import { StatusCodes } from 'http-status-codes';
+import * as tasksService from './task.service';
+import * as boardsService from '../boards/board.service';
+import { messages } from '../../common/constants';
 
-router.use(async (req, res, next) => {
+const router = express.Router({ mergeParams: true });
+
+router.use(async (req: Request, res: Response, next: () => unknown) => {
   const board = await boardsService.getBoard(req.params?.boardId);
 
   if (!board && req.params?.boardId) {
@@ -15,11 +17,11 @@ router.use(async (req, res, next) => {
 });
 router
   .route('/')
-  .get(async (req, res) => {
+  .get(async (req: Request, res: Response) => {
     const tasks = await tasksService.getAll(req.params?.boardId);
     res.json(tasks);
   })
-  .post(tasksService.validate('create'), async (req, res) => {
+  .post(tasksService.validate('create'), async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res
@@ -31,7 +33,7 @@ router
     return res.status(StatusCodes.CREATED).json(task);
   });
 
-router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
+router.route('/:id').get(tasksService.validate('getTask'), async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -45,7 +47,7 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Task') });
 })
-.put(tasksService.validate('updateTask'), async (req, res) => {
+.put(tasksService.validate('updateTask'), async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -58,7 +60,7 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Task') });
 })
-.delete(tasksService.validate('deleteTask'), async (req, res) => {
+.delete(tasksService.validate('deleteTask'), async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -71,4 +73,4 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req, res) => {
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Task') });
 });
 
-module.exports = router;
+export default router;

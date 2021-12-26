@@ -1,16 +1,18 @@
-const router = require('express').Router();
-const { validationResult  } = require('express-validator');
-const { StatusCodes } = require('http-status-codes');
-const User = require('./user.model');
-const usersService = require('./user.service');
-const { messages } = require('../../common/constants');
+import express, { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import { StatusCodes } from 'http-status-codes';
+import { User } from './user.model';
+import * as usersService from './user.service';
+import { messages } from '../../common/constants';
 
-router.route('/').get(async (req, res) => {
+const router = express.Router();
+
+router.route('/').get(async (_, res: Response) => {
   const users = await usersService.getAll();
   res.json(users.map(User.toResponse));
 });
 
-router.route('/').post(usersService.validate('createUser'), async (req, res)  =>{
+router.route('/').post(usersService.validate('createUser'), async (req: Request, res: Response)  =>{
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -20,7 +22,7 @@ router.route('/').post(usersService.validate('createUser'), async (req, res)  =>
   return res.status(StatusCodes.CREATED).json(User.toResponse(user));
 });
 
-router.route('/:id').get(usersService.validate('getUser'), async (req, res) => {
+router.route('/:id').get(usersService.validate('getUser'), async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -34,7 +36,7 @@ router.route('/:id').get(usersService.validate('getUser'), async (req, res) => {
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 })
-.put(usersService.validate('updateUser'), async (req, res) => {
+.put(usersService.validate('updateUser'), async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -47,7 +49,7 @@ router.route('/:id').get(usersService.validate('getUser'), async (req, res) => {
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 })
-.delete(usersService.validate('deleteUser'), async (req, res) => {
+.delete(usersService.validate('deleteUser'), async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
@@ -61,4 +63,4 @@ router.route('/:id').get(usersService.validate('getUser'), async (req, res) => {
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 });
 
-module.exports = router;
+export default router;
