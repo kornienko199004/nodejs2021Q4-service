@@ -38,7 +38,6 @@ app.use('/', (req, res, next) => {
 app.use('/users', userRouter);
 app.use('/boards', boardsRouter);
 
-// app.use((err: Error, _: Request, res: Response, next: () => unknown) => logger.loggerErrorMiddleware(err, _, res, next));
 app.use((err: Error, _: Request, res: Response, next: (arg: Error) => unknown): void => {
     if (err instanceof ValidationError) {
       logger.logError(err);
@@ -47,14 +46,16 @@ app.use((err: Error, _: Request, res: Response, next: (arg: Error) => unknown): 
     }
     next(err);
   }
-  // public loggerErrorMiddleware(err: Error, _: Request, res: Response, next: (arg: Error) => unknown): void {
-  //   if (err instanceof ValidationError) {
-  //     this.logger.error(err.message);
-  //     res.status(err.status).json(err.text);
-  //     return;
-  //   }
-  //   next(err);
-  // }
-)
+);
+
+
+process.on('uncaughtException', (error: Error) => {
+  logger.logError(error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason: Error) => {
+  logger.logError(reason);
+});
 
 export default app;
