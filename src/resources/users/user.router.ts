@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { User } from './user.model';
 import * as usersService from './user.service';
 import { messages } from '../../common/constants';
+import { ValidationError } from '../../common/validationError';
 
 const router = express.Router();
 
@@ -12,20 +13,20 @@ router.route('/').get(async (_, res: Response) => {
   res.json(users.map(User.toResponse));
 });
 
-router.route('/').post(usersService.validate('createUser'), async (req: Request, res: Response)  =>{
+router.route('/').post(usersService.validate('createUser'), async (req: Request, res: Response, next: (arg: Error) => unknown)  =>{
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
 
   const user = await usersService.create(req.body);
   return res.status(StatusCodes.CREATED).json(User.toResponse(user));
 });
 
-router.route('/:id').get(usersService.validate('getUser'), async (req: Request, res: Response) => {
+router.route('/:id').get(usersService.validate('getUser'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
 
   const id = req.params?.id;
@@ -36,10 +37,10 @@ router.route('/:id').get(usersService.validate('getUser'), async (req: Request, 
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 })
-.put(usersService.validate('updateUser'), async (req: Request, res: Response) => {
+.put(usersService.validate('updateUser'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
   const id = req.params?.id;
   const user = await usersService.updateUser(id, req.body);
@@ -49,10 +50,10 @@ router.route('/:id').get(usersService.validate('getUser'), async (req: Request, 
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
 })
-.delete(usersService.validate('deleteUser'), async (req: Request, res: Response) => {
+.delete(usersService.validate('deleteUser'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
   const id = req.params?.id;
   const user = await usersService.deleteUser(id);

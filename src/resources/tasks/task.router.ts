@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import * as tasksService from './task.service';
 import * as boardsService from '../boards/board.service';
 import { messages } from '../../common/constants';
+import { ValidationError } from '../../common/validationError';
 
 const router = express.Router({ mergeParams: true });
 
@@ -21,22 +22,20 @@ router
     const tasks = await tasksService.getAll(req.params?.boardId);
     res.json(tasks);
   })
-  .post(tasksService.validate('create'), async (req: Request, res: Response) => {
+  .post(tasksService.validate('create'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ errors: errors.array() });
+      return next(new ValidationError(errors.array()));
     }
 
     const task = await tasksService.create({ ...req.body, boardId: req.params?.boardId });
     return res.status(StatusCodes.CREATED).json(task);
   });
 
-router.route('/:id').get(tasksService.validate('getTask'), async (req: Request, res: Response) => {
+router.route('/:id').get(tasksService.validate('getTask'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
 
   const id = req.params?.id;
@@ -47,10 +46,10 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req: Request, 
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Task') });
 })
-.put(tasksService.validate('updateTask'), async (req: Request, res: Response) => {
+.put(tasksService.validate('updateTask'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
   const id = req.params?.id;
   const task = await tasksService.updateTask(id, req.body);
@@ -60,10 +59,10 @@ router.route('/:id').get(tasksService.validate('getTask'), async (req: Request, 
   }
   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Task') });
 })
-.delete(tasksService.validate('deleteTask'), async (req: Request, res: Response) => {
+.delete(tasksService.validate('deleteTask'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
+    return next(new ValidationError(errors.array()));
   }
   const id = req.params?.id;
   const task = await tasksService.removeTask(id);
