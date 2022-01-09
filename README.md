@@ -11,6 +11,20 @@
 git clone {repository URL}
 ```
 
+## Docker
+
+### Build and Run container
+```
+docker-compose up --build
+```
+
+### Running tests in the container
+```
+docker exec -i -t <Container ID> sh
+npm run test
+```
+for closing a terminal in the container, please type ```exit```.
+
 ## Installing NPM modules
 
 ```
