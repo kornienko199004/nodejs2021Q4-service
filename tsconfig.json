@@ -10,5 +10,8 @@
     "types": ["node"],
     "moduleResolution": "node",
     "noImplicitAny": true
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

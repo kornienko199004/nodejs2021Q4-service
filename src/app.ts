@@ -8,7 +8,6 @@ import boardsRouter from './resources/boards/board.router';
 import { Logger } from './logger/logger';
 import { ValidationError } from './common/validationError';
 
-
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 const logger = new Logger();
@@ -47,7 +46,6 @@ app.use((err: Error, _: Request, res: Response, next: (arg: Error) => unknown): 
     next(err);
   }
 );
-
 
 process.on('uncaughtException', (error: Error) => {
   logger.logError(error);
