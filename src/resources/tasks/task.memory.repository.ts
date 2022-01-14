@@ -1,5 +1,7 @@
+import {getManager} from "typeorm";
 import { TaskParams } from '../../models/interfaces';
 import { Task } from './task.model';
+import { Task as TaskEntity } from '../../entity/Task';
 
 let tasks: Task[] = [];
 
@@ -15,6 +17,10 @@ const getAll = async (boardId: string): Promise<Task[]> => tasks.filter((task) =
  * @returns Promise<Task>
  */
 const create = async (value: TaskParams): Promise<Task> => {
+  // const tasksRepository = getManager().getRepository(TaskEntity);
+
+  // const task = tasksRepository.create(value);
+  // await tasksRepository.save(task);
   const task = new Task(value);
   tasks.push(task);
   return task;

@@ -1,18 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column as OrmColumn } from 'typeorm';
-import { v4 } from 'uuid';
-import { BoardParams } from '../../models/interfaces';
-import { Column } from '../resources/boards/column.model';
-// import { Column } from './column.model';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BoardColumn } from './Column';
 
 @Entity()
 export class Board {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @OrmColumn()
+  @Column()
   title!: string;
 
-  @OrmColumn()
-  columns!: Column[];
+  // @Column()
+  // columns!: ColumnClass[];
+
+  @OneToMany(() => BoardColumn, boardColumn => boardColumn.board, {
+    cascade: true,
+})
+  columns!: BoardColumn[];
 }
