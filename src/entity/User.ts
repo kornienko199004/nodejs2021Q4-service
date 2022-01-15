@@ -1,6 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { Column as ColumnClass } from '../resources/boards/column.model';
-// import { Column } from './column.model';
 
 @Entity()
 export class User {
@@ -17,17 +15,3 @@ export class User {
   @Column()
   password!: string;
 }
-
-
-// @Entity()
-// export class Board {
-
-//   @PrimaryGeneratedColumn()
-//   id!: string;
-
-//   @Column()
-//   title!: string;
-
-//   @Column()
-//   columns!: ColumnClass[];
-// }

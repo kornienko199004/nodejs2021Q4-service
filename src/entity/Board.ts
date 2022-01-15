@@ -10,11 +10,8 @@ export class Board {
   @Column()
   title!: string;
 
-  // @Column()
-  // columns!: ColumnClass[];
-
   @OneToMany(() => BoardColumn, boardColumn => boardColumn.board, {
     cascade: true,
-})
+  })
   columns!: BoardColumn[];
 }

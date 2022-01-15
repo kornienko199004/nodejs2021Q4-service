@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Task {
 
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column()
@@ -12,13 +12,19 @@ export class Task {
   @Column()
   description!: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   userId!: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   boardId!: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   columnId!: string;
 
   @Column()

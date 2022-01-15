@@ -1,28 +1,41 @@
-import {getManager} from "typeorm";
+import { getRepository } from "typeorm";
 import { TaskParams } from '../../models/interfaces';
 import { Task } from './task.model';
 import { Task as TaskEntity } from '../../entity/Task';
-
-let tasks: Task[] = [];
 
 /**
  * Returns all tasks
  * @returns Promise<Task[]>
  */
-const getAll = async (boardId: string): Promise<Task[]> => tasks.filter((task) => task.boardId === boardId)
-
+const getAll = async (boardId: string): Promise<Task[]> => {
+  const taskRepository = getRepository(TaskEntity);
+  const rsl = await taskRepository.find({ where: { boardId } });
+  return rsl;
+};
 /**
  * Creates new task
  * @param value payload for new task creation
  * @returns Promise<Task>
  */
 const create = async (value: TaskParams): Promise<Task> => {
-  // const tasksRepository = getManager().getRepository(TaskEntity);
+  const tasksRepository = getRepository(TaskEntity);
+  const task: TaskEntity = new TaskEntity();
+  task.title = value.title;
+  task.description = value.description;
+  task.order = value.order;
+  if (value.userId) {
+    task.userId = value.userId;
+  }
 
-  // const task = tasksRepository.create(value);
-  // await tasksRepository.save(task);
-  const task = new Task(value);
-  tasks.push(task);
+  if (value.boardId) {
+    task.boardId = value.boardId;
+  }
+
+  if (value.columnId) {
+    task.columnId = value.columnId;
+  }
+
+  await tasksRepository.save(task);
   return task;
 };
 
@@ -31,7 +44,11 @@ const create = async (value: TaskParams): Promise<Task> => {
  * @param id task id
  * @returns Promise<Task | undefined>
  */
-const getTask = async (taskId: string): Promise<Task | undefined> => tasks.find((task) => task.id === taskId);
+const getTask = async (taskId: string): Promise<Task | undefined> => {
+  const tasksRepository = getRepository(TaskEntity);
+  const task = await tasksRepository.findOne(taskId);
+  return task;
+};
 
 /**
  * Removes task by id
@@ -39,9 +56,11 @@ const getTask = async (taskId: string): Promise<Task | undefined> => tasks.find(
  * @returns Promise<Task | null>
  */
 const removeTask = async (taskId: string): Promise<Task | null> => {
-  const index = tasks.findIndex((task) => task.id === taskId);
-  if (index > -1) {
-    const task = tasks.splice(index, 1)[0];
+  const tasksRepository = getRepository(TaskEntity);
+  const task = await tasksRepository.findOne(taskId);
+  const results = await tasksRepository.delete(taskId);
+
+  if (results && task) {
     return task;
   }
   return null;
@@ -53,11 +72,14 @@ const removeTask = async (taskId: string): Promise<Task | null> => {
  * @param board updated task value
  * @returns Promise<Task | null | undefined>
  */
-const updateTask = async (taskId: string, task: Task): Promise<Task | null | undefined> => {
-  const index = tasks.findIndex((item) => item.id === taskId);
-  if (index > -1) {
-    tasks[index] = task;
-    return getTask(taskId);
+const updateTask = async (taskId: string, value: Task): Promise<Task | null | undefined> => {
+  const tasksRepository = getRepository(TaskEntity);
+  const task = await tasksRepository.findOne(taskId);
+
+  if (task) {
+    tasksRepository.merge(task, value);
+    const results = await tasksRepository.save(task);
+    return results;
   }
   return null;
 };
@@ -67,8 +89,14 @@ const updateTask = async (taskId: string, task: Task): Promise<Task | null | und
  * @param boardId board id for delete
  * @returns Void
  */
-const deleteTasksByBoardId = (boardId: string): void => {
-  tasks = tasks.filter((task) => task.boardId !== boardId);
+const deleteTasksByBoardId = async (boardId: string): Promise<void> => {
+  const tasksRepository = getRepository(TaskEntity);
+  const tasks = await tasksRepository.find({ where: { boardId } });
+  const tasksIds: string[] = tasks.map((task: TaskEntity) => task.id);
+
+  if (tasksIds && tasksIds.length > 0) {
+    await tasksRepository.delete(tasksIds);
+  }
 };
 
 /**
@@ -76,13 +104,12 @@ const deleteTasksByBoardId = (boardId: string): void => {
  * @param userId user id for unassign
  * @returns Void
  */
-const unassignUser = (userId: string): void => {
-  tasks = tasks.map((task) => {
-    if (task.userId === userId) {
-      return { ...task, userId: null };
-    }
-    return task;
-  })
+const unassignUser = async (userId: string): Promise<void> => {
+  await getRepository(TaskEntity).createQueryBuilder()
+    .update()
+    .set({ userId: null as unknown as string })
+    .where(`userId = :userId`, { userId})
+    .execute();
 }
 
 export { getAll, create, getTask, updateTask, removeTask, deleteTasksByBoardId, unassignUser };

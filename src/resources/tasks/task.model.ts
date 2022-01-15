@@ -8,11 +8,11 @@ export class Task {
 
   description: string;
 
-  userId: string | null;
+  userId?: string;
 
-  boardId: string | null;
+  boardId?: string;
 
-  columnId: string | null;
+  columnId?: string;
 
   order: number;
 

@@ -79,11 +79,22 @@ const updateBoard = async (id: string, value: Board): Promise<Board | null> => {
  */
 const deleteBoard = async (id: string): Promise<Board | null> => {
   const boardRepository = getRepository(BoardEntity);
-  const board = await boardRepository.findOne(id);
-  const results = await boardRepository.delete(id);
+  const columnsRepository = getRepository(BoardColumn);
 
-  if (results && board) {
-    return board;
+  const board = await boardRepository.findOne(id);
+
+  if (board) {
+    const columns = await columnsRepository.find({ where: { board }});
+
+    if (columns && columns.length > 0) {
+      await columnsRepository.delete(columns.map((column) => column.id));
+    }
+
+    const results = await boardRepository.delete(id);
+  
+    if (results && board) {
+      return board;
+    }
   }
   return null;
 };
