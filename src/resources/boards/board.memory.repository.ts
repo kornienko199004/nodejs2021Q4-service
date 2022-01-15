@@ -10,9 +10,14 @@ import { Column } from './column.model';
  * @returns Promise<Board[]>
  */
 const getAll = async (): Promise<Board[]> => {
-  const boardRepository = getRepository(BoardEntity);
-  const boards = await boardRepository.find({ relations: ["columns"] });
-  return boards;
+  try {
+    const boardRepository = getRepository(BoardEntity);
+    const boards = await boardRepository.find({ relations: ["columns"] });
+    return boards;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 }
 
 /**
