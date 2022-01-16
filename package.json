@@ -17,7 +17,8 @@
     "test:users": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/users.test.js\" --noStackTrace --runInBand",
     "test:tasks": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/tasks.test.js\" --noStackTrace --runInBand",
     "test:boards": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/boards.test.js\" --noStackTrace --runInBand",
-    "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
+    "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace",
+    "generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -n migrationName -p --config ./src/ormconfig.ts"
   },
   "keywords": [
     "rs",
