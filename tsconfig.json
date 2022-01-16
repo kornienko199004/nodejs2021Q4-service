@@ -9,7 +9,9 @@
     "lib": ["es6"],
     "types": ["node"],
     "moduleResolution": "node",
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*.ts"

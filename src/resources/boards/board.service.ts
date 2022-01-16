@@ -40,8 +40,8 @@ const updateBoard = (id: string, board: Board): Promise<Board | null> => boardsR
  * @param id board id
  * @returns Promise<Board | null>
  */
-const deleteBoard = (boardId: string): Promise<Board | null> => {
-  tasksService.deleteTasksByBoardId(boardId);
+const deleteBoard = async (boardId: string): Promise<Board | null> => {
+  await tasksService.deleteTasksByBoardId(boardId);
   return boardsRepo.deleteBoard(boardId);
 };
 

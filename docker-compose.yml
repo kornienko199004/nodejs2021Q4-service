@@ -4,8 +4,12 @@ services:
   my-api_db:
     image: postgres:14.1-alpine
     container_name: my-api_db
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./my-api_db:/my-api_db/data
     networks:
@@ -18,13 +22,14 @@ services:
     ports:
       - "${PORT}:${OUTSIDE_PORT}"
     depends_on:
-      - db
+      - my-api_db
     expose:
       - ${PORT}
     restart: on-failure
     volumes:
       - ./src:/my-api/src
       - ./nodemon.json:/my-api/nodemon.json
+      - ./logs:/logs
     networks:
       - my-api-network
 
