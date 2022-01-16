@@ -1,0 +1,33 @@
+version: '3.0'
+
+services:
+  my-api_db:
+    image: postgres:14.1-alpine
+    container_name: my-api_db
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - ./my-api_db:/my-api_db/data
+    networks:
+      - my-api-network
+
+  my-api:
+    container_name: my-api
+    build:
+      context: .
+    ports:
+      - "${PORT}:${OUTSIDE_PORT}"
+    depends_on:
+      - db
+    expose:
+      - ${PORT}
+    restart: on-failure
+    volumes:
+      - ./src:/my-api/src
+      - ./nodemon.json:/my-api/nodemon.json
+    networks:
+      - my-api-network
+
+networks:
+  my-api-network:
+    driver: bridge
