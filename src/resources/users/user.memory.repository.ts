@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm';
 import { UserParams } from '../../models/interfaces';
 import { User } from './user.model';
 import { User as UserEntity } from '../../entity/User';
+import { hashPassword } from '../../helpers/hashHelper';
 
 /**
  * Returns all users
@@ -20,7 +21,8 @@ const getAll = async (): Promise<User[]> => {
  */
 const create = async (value: UserParams): Promise<User> => {
   const userRepository = getRepository(UserEntity);
-  const user = userRepository.create(value);
+  const hashedPassword = await hashPassword(value.password);
+  const user = userRepository.create({ ...value, password: hashedPassword });
   await userRepository.save(user);
   return user;
 };
@@ -34,6 +36,21 @@ const getUser = async (id: string): Promise<User | undefined> => {
   const userRepository = getRepository(UserEntity);
   const user = await userRepository.findOne(id);
   return user;
+};
+
+/**
+ * Returns user by login
+ * @param login user login
+ * @returns Promise<User | undefined>
+ */
+const getUserByLogin = async (login: string): Promise<User | null> => {
+  const userRepository = getRepository(UserEntity);
+  const users = await userRepository.find({ where: { login } });
+
+  if (users) {
+    return users[0];
+  }
+  return null;
 };
 
 /**
@@ -70,4 +87,4 @@ const deleteUser = async (id: string): Promise<User | null> => {
   return null;
 };
 
-export { getAll, create, getUser, updateUser, deleteUser };
+export { getAll, create, getUser, updateUser, deleteUser, getUserByLogin };
