@@ -5,6 +5,7 @@ import YAML from 'yamljs';
 import { finished } from 'stream';
 import userRouter from './resources/users/user.router';
 import boardsRouter from './resources/boards/board.router';
+import authRouter from './resources/auth/auth.router';
 import { logger } from './logger/logger';
 import { ValidationError } from './common/validationError';
 
@@ -33,6 +34,7 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use('/login', authRouter);
 app.use('/users', userRouter);
 app.use('/boards', boardsRouter);
 

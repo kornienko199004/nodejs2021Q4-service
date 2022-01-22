@@ -20,11 +20,16 @@ const getAll = async (): Promise<User[]> => {
  * @returns Promise<User>
  */
 const create = async (value: UserParams): Promise<User> => {
-  const userRepository = getRepository(UserEntity);
-  const hashedPassword = await hashPassword(value.password);
-  const user = userRepository.create({ ...value, password: hashedPassword });
-  await userRepository.save(user);
-  return user;
+  try {
+    const userRepository = getRepository(UserEntity);
+    const hashedPassword = await hashPassword(value.password);
+    const user = userRepository.create({ ...value, password: hashedPassword });
+    await userRepository.save(user);
+    return user;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 /**

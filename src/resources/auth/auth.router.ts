@@ -1,67 +1,23 @@
 import express, { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { StatusCodes } from 'http-status-codes';
-import { messages } from '../../common/constants';
-import * as boardsService from './auth.service';
-import { ValidationError } from '../../common/validationError';
+import { getToken, validate } from './auth.service';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(async (req: Request, res: Response) => {
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //   return next(new ValidationError(errors.array()));
-    // }
-    // check user
-    const token = '';
+  .post(validate('login'), async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid password or login' });
+    }
+
+    const token = await getToken(req.body);
     if (token) {
       return res.status(StatusCodes.OK).json(token);
     }
-    return res.status(StatusCodes.UNAUTHORIZED).send();
-    // const board = await boardsService.create(req.body);
+    return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid password or login' });
   });
-
-// router.route('/:id').get(boardsService.validate('getBoard'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return next(new ValidationError(errors.array()));
-//   }
-
-//   const id = req.params?.id;
-//   const board = await boardsService.getBoard(id);
-
-//   if (board) {
-//     return res.json(board);
-//   }
-//   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Board') });
-// })
-// .put(boardsService.validate('updateBoard'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return next(new ValidationError(errors.array()));
-//   }
-//   const id = req.params?.id;
-//   const board = await boardsService.updateBoard(id, req.body);
-
-//   if (board) {
-//     return res.json(board);
-//   }
-//   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('User') });
-// })
-// .delete(boardsService.validate('deleteBoard'), async (req: Request, res: Response, next: (arg: Error) => unknown) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return next(new ValidationError(errors.array()));
-//   }
-//   const id = req.params?.id;
-//   const board = await boardsService.deleteBoard(id);
-
-//   if (board) {
-//     return res.status(StatusCodes.NO_CONTENT).json({ message: messages.deleted('Board') });
-//   }
-//   return res.status(StatusCodes.NOT_FOUND).json({ message: messages.notFound('Board') });
-// });
 
 export default router;

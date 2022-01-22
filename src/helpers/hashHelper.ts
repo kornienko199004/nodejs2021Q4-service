@@ -7,7 +7,7 @@ import { SALT_ROUNDS } from '../common/config';
  * @returns hashed password
  */
 export const hashPassword = async (password: string): Promise<string> => {
-  const hashedPassword: string = await hash(password, SALT_ROUNDS || 10);
+  const hashedPassword: string = await hash(password, Number(SALT_ROUNDS) || 10);
   return hashedPassword;
 };
 

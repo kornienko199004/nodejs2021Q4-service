@@ -1,15 +1,11 @@
 
 import { body, ValidationChain } from 'express-validator';
-import * as boardsRepo from './board.memory.repository';
-import { idValidation } from '../../utils/validation.helper';
-import * as tasksService from '../tasks/task.service';
-import { Board } from './board.model';
-import { BoardParams, UserParams } from '../../models/interfaces';
-import { Column } from './column.model';
+import { sign } from 'jsonwebtoken';
+import { UserParams } from '../../models/interfaces';
 import * as usersService from '../users/user.service';
 import { User } from '../../entity/User';
 import { checkPassword } from '../../helpers/hashHelper';
-import { AuthError } from '../../common/authError';
+import { JWT_SECRET_KEY } from '../../common/config';
 
 /**
  * Creates new board
@@ -19,14 +15,30 @@ import { AuthError } from '../../common/authError';
 export const getToken = async (value: UserParams): Promise<string | null> => {
   const user: User | null = await usersService.getUserByLogin(value.login);
 
-  if (!user) {
-    return null;
+  if (user) {
+    const passwordsEqual = await checkPassword(value.password, user.password);
+    if (passwordsEqual) {
+      return sign({ id: user.id, login: user.login }, JWT_SECRET_KEY as string, { expiresIn: '1h' });
+    }
   }
 
-  const passwordsEqual = await checkPassword(value.password, user.password);
-  if (passwordsEqual) {
-    return '';
-  }
-
-  throw new AuthError();
+  return null;
 };
+
+/**
+ * Returns ValidationChain[]
+ * @param method REST method name
+ * @returns ValidationChain[]
+ */
+export const validate = (method: string): ValidationChain[] => {
+  switch (method) {
+    case 'login': {
+     return [
+        body('login', 'Invalid password or login').exists(),
+        body('password', 'Invalid password or login').exists(),
+       ];
+    }
+    default:
+      return [];
+  }
+}
