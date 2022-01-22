@@ -8,6 +8,7 @@ import boardsRouter from './resources/boards/board.router';
 import authRouter from './resources/auth/auth.router';
 import { logger } from './logger/logger';
 import { ValidationError } from './common/validationError';
+import { AuthMiddleware } from './resources/auth/auth.middleware';
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -34,6 +35,7 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use(AuthMiddleware.checkToken);
 app.use('/login', authRouter);
 app.use('/users', userRouter);
 app.use('/boards', boardsRouter);

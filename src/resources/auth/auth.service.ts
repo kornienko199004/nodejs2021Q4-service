@@ -1,11 +1,10 @@
 
 import { body, ValidationChain } from 'express-validator';
-import { sign } from 'jsonwebtoken';
 import { UserParams } from '../../models/interfaces';
 import * as usersService from '../users/user.service';
 import { User } from '../../entity/User';
 import { checkPassword } from '../../helpers/hashHelper';
-import { JWT_SECRET_KEY } from '../../common/config';
+import { TokenHelper } from '../../helpers/token.helper';
 
 /**
  * Creates new board
@@ -18,7 +17,7 @@ export const getToken = async (value: UserParams): Promise<string | null> => {
   if (user) {
     const passwordsEqual = await checkPassword(value.password, user.password);
     if (passwordsEqual) {
-      return sign({ id: user.id, login: user.login }, JWT_SECRET_KEY as string, { expiresIn: '1h' });
+      return TokenHelper.generateToken(user.id, user.login);
     }
   }
 
