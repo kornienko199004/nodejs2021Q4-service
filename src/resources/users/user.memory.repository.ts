@@ -1,13 +1,18 @@
+import { getRepository } from 'typeorm';
 import { UserParams } from '../../models/interfaces';
 import { User } from './user.model';
-
-const data: User[] = [];
+import { User as UserEntity } from '../../entity/User';
+import { hashPassword } from '../../helpers/hashHelper';
 
 /**
  * Returns all users
  * @returns Promise<User[]>
  */
-const getAll = async (): Promise<User[]> => data;
+const getAll = async (): Promise<User[]> => {
+  const userRepository = getRepository(UserEntity);
+  const users = await userRepository.find();
+  return users;
+};
 
 /**
  * Creates new user
@@ -15,9 +20,16 @@ const getAll = async (): Promise<User[]> => data;
  * @returns Promise<User>
  */
 const create = async (value: UserParams): Promise<User> => {
-  const user = new User(value);
-  data.push(user);
-  return user;
+  try {
+    const userRepository = getRepository(UserEntity);
+    const hashedPassword = await hashPassword(value.password);
+    const user = userRepository.create({ ...value, password: hashedPassword });
+    await userRepository.save(user);
+    return user;
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 /**
@@ -25,7 +37,26 @@ const create = async (value: UserParams): Promise<User> => {
  * @param id user id
  * @returns Promise<User | undefined>
  */
-const getUser = async (id: string): Promise<User | undefined> => data.find((item) => item.id === id);
+const getUser = async (id: string): Promise<User | undefined> => {
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne(id);
+  return user;
+};
+
+/**
+ * Returns user by login
+ * @param login user login
+ * @returns Promise<User | undefined>
+ */
+const getUserByLogin = async (login: string): Promise<User | null> => {
+  const userRepository = getRepository(UserEntity);
+  const users = await userRepository.find({ where: { login } });
+
+  if (users) {
+    return users[0];
+  }
+  return null;
+};
 
 /**
  * Updates user by id
@@ -33,11 +64,14 @@ const getUser = async (id: string): Promise<User | undefined> => data.find((item
  * @param user updated user value
  * @returns Promise<User | null>
  */
-const updateUser = async (id: string, user: User): Promise<User | null> => {
-  const index = data.findIndex((item) => item.id === id);
-  if (index > -1) {
-    data[index] = user;
-    return user;
+const updateUser = async (id: string, value: User): Promise<User | null> => {
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne(id);
+
+  if (user) {
+    userRepository.merge(user, value);
+    const results = await userRepository.save(user);
+    return results;
   }
   return null;
 };
@@ -48,13 +82,14 @@ const updateUser = async (id: string, user: User): Promise<User | null> => {
  * @returns Promise<User | null>
  */
 const deleteUser = async (id: string): Promise<User | null> => {
-  const index = data.findIndex((item) => item.id === id);
-  if (index > -1) {
-    const user = data[index];
-    data.splice(index, 1);
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne(id);
+  const results = await userRepository.delete(id);
+
+  if (results && user) {
     return user;
   }
   return null;
 };
 
-export { getAll, create, getUser, updateUser, deleteUser };
+export { getAll, create, getUser, updateUser, deleteUser, getUserByLogin };

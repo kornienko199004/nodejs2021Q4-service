@@ -19,7 +19,9 @@ router.route('/').post(usersService.validate('createUser'), async (req: Request,
     return next(new ValidationError(errors.array()));
   }
 
+  console.log('user');
   const user = await usersService.create(req.body);
+  console.log(user);
   return res.status(StatusCodes.CREATED).json(User.toResponse(user));
 });
 

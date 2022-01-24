@@ -5,12 +5,13 @@ import YAML from 'yamljs';
 import { finished } from 'stream';
 import userRouter from './resources/users/user.router';
 import boardsRouter from './resources/boards/board.router';
-import { Logger } from './logger/logger';
+import authRouter from './resources/auth/auth.router';
+import { logger } from './logger/logger';
 import { ValidationError } from './common/validationError';
+import { AuthMiddleware } from './resources/auth/auth.middleware';
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
-const logger = new Logger();
 
 app.use(express.json());
 
@@ -34,6 +35,8 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use(AuthMiddleware.checkToken);
+app.use('/login', authRouter);
 app.use('/users', userRouter);
 app.use('/boards', boardsRouter);
 

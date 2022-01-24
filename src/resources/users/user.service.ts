@@ -26,6 +26,13 @@ export const create = (value: UserParams): Promise<User> => usersRepo.create(val
 export const getUser = (id: string): Promise<User | undefined> => usersRepo.getUser(id);
 
 /**
+ * Returns user by login
+ * @param login user login
+ * @returns Promise<User | undefined>
+ */
+export const getUserByLogin = (login: string): Promise<User | null> => usersRepo.getUserByLogin(login);
+
+/**
  * Updates user by id
  * @param id user id
  * @param user updated user value

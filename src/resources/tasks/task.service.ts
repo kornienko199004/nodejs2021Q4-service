@@ -44,14 +44,14 @@ export const removeTask = (taskId: string): Promise<Task | null> => tasksRepo.re
  * @param boardId board id for delete
  * @returns Void
  */
-export const deleteTasksByBoardId = (boardId: string): void => tasksRepo.deleteTasksByBoardId(boardId);
+export const deleteTasksByBoardId = (boardId: string): Promise<void> => tasksRepo.deleteTasksByBoardId(boardId);
 
 /**
  * Unassign user by user id
  * @param userId user id for unassign
  * @returns Void
  */
-export const unassignUser = (userId: string): void => tasksRepo.unassignUser(userId);
+export const unassignUser = (userId: string): Promise<void> => tasksRepo.unassignUser(userId);
 
 /**
  * Returns ValidationChain[]
