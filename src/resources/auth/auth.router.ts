@@ -15,7 +15,7 @@ router
 
     const token = await getToken(req.body);
     if (token) {
-      return res.status(StatusCodes.OK).json(token);
+      return res.status(StatusCodes.OK).json({ token });
     }
     return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid password or login' });
   });
