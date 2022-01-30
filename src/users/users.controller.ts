@@ -24,7 +24,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User | null> {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<Omit<User, 'password'> | null> {
     return this.usersService.update(id, updateUserDto);
   }
 

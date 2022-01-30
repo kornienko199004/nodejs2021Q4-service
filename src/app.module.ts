@@ -4,6 +4,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
+import { BoardsModule } from './boards/boards.module';
+import { Board } from './boards/entities/board.entity';
+import { BoardColumn } from './boards/entities/column.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -13,10 +16,11 @@ import { UsersModule } from './users/users.module';
     "username": "postgres",
     "password": "password",
     "database": "test",
-    "entities": [User],
+    "entities": [User, Board, BoardColumn],
     "synchronize": true
   }),
-  UsersModule],
+  UsersModule,
+  BoardsModule],
   controllers: [AppController],
   providers: [AppService],
 })
