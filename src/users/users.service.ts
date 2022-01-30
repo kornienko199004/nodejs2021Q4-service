@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hashPassword } from '../helpers/hashHelper';
+import { TasksService } from '../tasks/tasks.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -11,6 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private tasksService: TasksService
   ) {}
 
   /**
@@ -81,6 +83,7 @@ export class UsersService {
    * @returns Promise<User | null>
    */
   async remove(id: string): Promise<User | null> {
+    await this.tasksService.unassignUser(id);
     const user = await this.usersRepository.findOne(id);
     const results = await this.usersRepository.delete(id);
   

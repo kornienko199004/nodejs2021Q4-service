@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TasksService } from '../tasks/tasks.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board } from './entities/board.entity';
@@ -12,7 +13,8 @@ export class BoardsService {
     @InjectRepository(Board)
     private boardRepository: Repository<Board>,
     @InjectRepository(BoardColumn)
-    private columnsRepository: Repository<BoardColumn>
+    private columnsRepository: Repository<BoardColumn>,
+    private tasksService: TasksService,
   ) {}
 
   async create(createBoardDto: CreateBoardDto): Promise<Board> {
@@ -30,8 +32,17 @@ export class BoardsService {
       });
       await Promise.all(columnsEntity.map((column: BoardColumn) => this.columnsRepository.save(column)));
     }
-  
+
     const joinedBoard: Board = (await this.boardRepository.findOne(board.id, { relations: ["columns"] }) as Board);
+    joinedBoard.columns = joinedBoard.columns.sort((a: BoardColumn, b: BoardColumn) => {
+      if (a.order > b.order) {
+        return 1;
+      }
+      if (a.order < b.order) {
+        return -1;
+      }
+      return 0;
+    });
     return joinedBoard;
   }
 
@@ -64,8 +75,19 @@ export class BoardsService {
   
     if (board) {
       this.boardRepository.merge(board, updateBoardDto);
-      const results = await this.boardRepository.save(board);
-      return results;
+      await this.boardRepository.save(board);
+
+      const joinedBoard: Board = (await this.boardRepository.findOne(board.id, { relations: ["columns"] }) as Board);
+      joinedBoard.columns = joinedBoard.columns.sort((a: BoardColumn, b: BoardColumn) => {
+        if (a.order > b.order) {
+          return 1;
+        }
+        if (a.order < b.order) {
+          return -1;
+        }
+        return 0;
+      });
+      return joinedBoard;
     }
     return null;
   }
@@ -77,6 +99,7 @@ export class BoardsService {
    */
   async remove(id: string): Promise<Board | null> {
     const board = await this.boardRepository.findOne(id);
+    await this.tasksService.deleteTasksByBoardId(id);
 
     if (board) {
       const columns = await this.columnsRepository.find({ where: { board }});
