@@ -8,10 +8,10 @@ export class BoardColumn {
   id!: string;
 
   @Column()
-  title!: string;
+  order!: number;
 
   @Column()
-  order!: number;
+  title!: string;
 
   @ManyToOne(() => Board, board => board.columns)
   board!: Board;
