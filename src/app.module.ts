@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +10,12 @@ import { BoardColumn } from './boards/entities/column.entity';
 import { TasksModule } from './tasks/tasks.module';
 import { Task } from './tasks/entities/task.entity';
 import { AuthModule } from './auth/auth.module';
+import { LoggerMiddleware } from './middleware/logger.middleware';
+import { UsersController } from './users/users.controller';
+import { TasksController } from './tasks/tasks.controller';
+import { BoardsController } from './boards/boards.controller';
+import { Logger } from './logger/logger';
+import { CustomLogger } from './logger/CustomLogger';
 
 @Module({
   imports: [
@@ -29,6 +35,12 @@ import { AuthModule } from './auth/auth.module';
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Logger, CustomLogger],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes(UsersController, TasksController, BoardsController);
+  }
+}
