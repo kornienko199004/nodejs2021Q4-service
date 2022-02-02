@@ -12,3 +12,4 @@ export const { JWT_SECRET_KEY } = process.env;
 export const AUTH_MODE = process.env.AUTH_MODE === 'true';
 export const { SALT_ROUNDS } = process.env;
 export const WHITE_LIST_PATH = ['/', '/doc', '/login'];
+export const { USE_FASTIFY } = process.env;
