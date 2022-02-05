@@ -1,21 +1,15 @@
+import { IsNotEmpty, IsOptional } from "class-validator";
+
 export class CreateUserDto {
+  @IsOptional()
   id?: string;
 
-  name: string;
+  @IsNotEmpty()
+  name!: string;
 
-  login: string;
+  @IsNotEmpty()
+  login!: string;
 
-  password: string;
-
-  constructor(value: {
-    id?: string,
-    name: string,
-    login: string,
-    password: string,
-  }) {
-    this.id = value.id;
-    this.name = value.name;
-    this.login = value.login;
-    this.password = value.password;
-  }
+  @IsNotEmpty()
+  password!: string;
 }

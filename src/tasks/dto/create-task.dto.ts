@@ -1,42 +1,24 @@
+import { IsNotEmpty, IsOptional } from "class-validator";
+
 export class CreateTaskDto {
-  id: string;
+  @IsOptional()
+  id?: string;
 
-  title: string;
+  @IsNotEmpty()
+  title!: string;
 
-  description: string;
+  @IsNotEmpty()
+  description!: string;
 
+  @IsOptional()
   userId?: string;
 
+  @IsOptional()
   boardId?: string;
 
+  @IsOptional()
   columnId?: string;
 
-  order: number;
-
-  constructor(value: {
-    id: string;
-    title: string;
-    description: string;
-    order: number;
-    userId?: string;
-    boardId?: string;
-    columnId?: string;
-  }) {
-    this.id = value.id;
-    this.title = value.title;
-    this.description = value.description;
-    this.order = value.order;
-
-    if (value.userId) {
-      this.userId = value.userId;
-    }
-
-    if (value.boardId) {
-      this.boardId = value.boardId;
-    }
-
-    if (value.columnId) {
-      this.columnId = value.columnId;
-    }
-  }
+  @IsNotEmpty()
+  order!: number;
 }

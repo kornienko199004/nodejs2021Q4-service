@@ -8,8 +8,7 @@ export class LoggerMiddleware implements NestMiddleware {
   constructor(private logger: Logger) {}
 
   use(req: Request, res: Response, next: NextFunction): void {
-    // console.log('Request...');
-    // this.logger.logInfo(req);
+    console.log(req);
     const start = Date.now();
     next();
     finished(res, () => {

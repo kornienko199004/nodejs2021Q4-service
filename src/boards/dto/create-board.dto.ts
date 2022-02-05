@@ -1,18 +1,13 @@
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { BoardColumn } from "../entities/column.entity";
 
 export class CreateBoardDto {
+  @IsOptional()
   id?: string;
 
-  title: string;
+  @IsNotEmpty()
+  title!: string;
 
+  @IsOptional()
   columns?: BoardColumn[];
-
-  constructor(value: {
-    id?: string,
-    title: string,
-    columns?: BoardColumn[],
-  }) {
-    this.id = value.id;
-    this.title = value.title;
-    this.columns = value.columns;
-  }}
+}

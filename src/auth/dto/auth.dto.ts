@@ -1,13 +1,9 @@
+import { IsNotEmpty } from "class-validator";
+
 export class LoginDto {
-  login: string;
+  @IsNotEmpty()
+  login!: string;
 
-  password: string;
-
-  constructor(value: {
-    login: string;
-    password: string;
-  }) {
-    this.login = value.login;
-    this.password = value.password;
-  }
+  @IsNotEmpty()
+  password!: string;
 }
