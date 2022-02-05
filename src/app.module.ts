@@ -14,6 +14,8 @@ import { TasksController } from './tasks/tasks.controller';
 import { BoardsController } from './boards/boards.controller';
 import { Logger } from './logger/logger';
 import { CustomLogger } from './logger/CustomLogger';
+import { FilesModule } from './files/files.module';
+import { File } from './files/entities/file.entity';
 
 @Module({
   imports: [
@@ -24,13 +26,14 @@ import { CustomLogger } from './logger/CustomLogger';
     "username": "postgres",
     "password": "password",
     "database": "test",
-    "entities": [User, Board, BoardColumn, Task],
+    "entities": [User, Board, BoardColumn, Task, File],
     "synchronize": true
     }),
     UsersModule,
     BoardsModule,
     TasksModule,
-    AuthModule
+    AuthModule,
+    FilesModule
   ],
   providers: [Logger, CustomLogger, ValidationPipe],
 })
