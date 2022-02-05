@@ -10,7 +10,6 @@
   "main": "src/server.ts",
   "scripts": {
     "build": "tsc --project ./",
-    "start": "nodemon src/server.ts development --exitcrash -L",
     "start:prod": "npm run build && node ./build/server.js",
     "lint": "eslint --ext .js,.ts --fix src/",
     "test": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/*.test.js\" --noStackTrace --runInBand",
@@ -19,7 +18,8 @@
     "test:boards": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/boards.test.js\" --noStackTrace --runInBand",
     "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace",
     "generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -n migrationName -p --config ./src/ormconfig.ts",
-    "start:dev": "nest start --watch"
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run --config ./src/ormconfig.ts",
+    "start": "nest start --watch"
   },
   "keywords": [
     "rs",

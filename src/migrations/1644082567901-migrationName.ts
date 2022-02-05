@@ -1,8 +1,7 @@
-/* eslint-disable class-methods-use-this */
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class migrationName1642322034390 implements MigrationInterface {
-    name = 'migrationName1642322034390'
+export class migrationName1644082567901 implements MigrationInterface {
+    name = 'migrationName1644082567901'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -19,6 +18,13 @@ export class migrationName1642322034390 implements MigrationInterface {
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "title" character varying NOT NULL,
                 CONSTRAINT "PK_865a0f2e22c140d261b1df80eb1" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "file" (
+                "id" character varying NOT NULL,
+                "fileName" character varying NOT NULL,
+                CONSTRAINT "PK_36b46d232307066b3a2c9ea3a1d" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
@@ -57,6 +63,9 @@ export class migrationName1642322034390 implements MigrationInterface {
         `);
         await queryRunner.query(`
             DROP TABLE "task"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "file"
         `);
         await queryRunner.query(`
             DROP TABLE "board"
