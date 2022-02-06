@@ -7,5 +7,8 @@ RUN npm install
 # RUN npm install nodemon -g
 COPY . .
 # CMD ["npm", "run", "start:prod"]
-CMD ["npm", "run", "start"]
+# RUN npm run generate
+# RUN npm run generate
+CMD npm run migration:run && npm start
+# CMD ["npm", "run", "start"]
 # CMD ["nodemon", "--exec", "npm", "run", "start"]

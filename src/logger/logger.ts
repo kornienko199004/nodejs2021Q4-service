@@ -1,7 +1,9 @@
+import { Injectable } from "@nestjs/common";
 import { Request } from "express";
 import { createLogger, format, transports, Logger as WinstonLogger } from 'winston';
 import { ValidationError } from "../common/validationError";
 
+@Injectable()
 export class Logger {
   logger: WinstonLogger;
 
@@ -16,10 +18,10 @@ export class Logger {
         format.splat(),
         format.json()
       ),
-      defaultMeta: { service: 'your-service-name' },
+      defaultMeta: { service: 'nodejs2021Q4-service' },
       transports: [
-        new transports.File({ filename: 'errors.log', level: 'error' }),
-        new transports.File({ filename: 'combined.log' })
+        new transports.File({ filename: 'logs/errors.log', level: 'error' }),
+        new transports.File({ filename: 'logs/combined.log' })
       ]
     });
   }
@@ -38,6 +40,10 @@ export class Logger {
     return `${str} [${ms}ms]`
   }
 
+  public logMessage(message: string): void {
+    this.logger.log('info', message);
+  }
+
   public logInfo(req: Request, statusCode: number, ms: number): void {
     this.logger.log('info', Logger.getLogString(req, statusCode, ms));
   }
@@ -49,5 +55,3 @@ export class Logger {
     this.logger.error(err.message);
   }
 }
-
-

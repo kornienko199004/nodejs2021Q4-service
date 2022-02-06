@@ -51,6 +51,27 @@ After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+## Performance
+
+
+### Express
+
+|               |                                               |                        |
+| ------------- | --------------------------------------------- | ---------------------- |
+| http.codes    | [200, 201, 400]                               | [5, 1, 4]              |
+| requests      | [request_rate, requests]                      | [3/sec, 10]            |
+| response_time | [min, max, median, p95, p99]                  | [1, 65, 2, 58.6, 58.6] |
+| responses     | [responses, created, created_by_name, failed] | [10, 5, 5, 5]          |
+
+### Fastify
+
+|               |                                               |                        |
+| ------------- | --------------------------------------------- | ---------------------- |
+| http.codes    | [200, 201, 400]                               | [5, 3, 2]              |
+| requests      | [request_rate, requests]                      | [4/sec, 10]            |
+| response_time | [min, max, median, p95, p99]                  | [5, 117, 10.1, 100.5, 100.5] |
+| responses     | [responses, created, created_by_name, failed] | [10, 5, 5, 5]          |
+
 ## Testing
 
 After application running open new terminal and enter:

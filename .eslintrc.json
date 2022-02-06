@@ -43,6 +43,8 @@
     "node/no-missing-import": 0,
     "@typescript-eslint/no-explicit-any": 2,
     "@typescript-eslint/unified-signatures": 2,
-    "@typescript-eslint/explicit-function-return-type": 2
+    "@typescript-eslint/explicit-function-return-type": 2,
+    "no-useless-constructor": 0,
+    "class-methods-use-this": 0
   }
 }

@@ -1,0 +1,32 @@
+config:
+  target: "http://localhost:4000"
+  phases:
+    - duration: 5
+      arrivalRate: 1
+  payload:
+    path: "payload.csv"
+    fields:
+      - "login"
+      - "name"
+      - "password"
+scenarios:
+  - flow:
+      - get:
+          url: "/users"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmNDNjN2MyZS1iYTAyLTRmMTktOTI4OC0zMTJkMTVlMGI2MGIiLCJsb2dpbiI6ImFkbWluIiwiaWF0IjoxNjQ0MTMxMDgxLCJleHAiOjE2NDQxMzQ2ODF9.NGRvdkEWBBFsKiL3iRRWIcbAXlB8MQCfMAQkKWRv3J0"
+      - post:
+          url: "/users"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmNDNjN2MyZS1iYTAyLTRmMTktOTI4OC0zMTJkMTVlMGI2MGIiLCJsb2dpbiI6ImFkbWluIiwiaWF0IjoxNjQ0MTMxMDgxLCJleHAiOjE2NDQxMzQ2ODF9.NGRvdkEWBBFsKiL3iRRWIcbAXlB8MQCfMAQkKWRv3J0"
+          json:
+            name: "{{ name }}"
+            login: "{{ login }}"
+            password: "{{ password }}"
+          capture:
+            - json: "$.results.id"
+              as: "userId"
+      - delete:
+          url: "/users/{{ userId }}"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJmNDNjN2MyZS1iYTAyLTRmMTktOTI4OC0zMTJkMTVlMGI2MGIiLCJsb2dpbiI6ImFkbWluIiwiaWF0IjoxNjQ0MTMxMDgxLCJleHAiOjE2NDQxMzQ2ODF9.NGRvdkEWBBFsKiL3iRRWIcbAXlB8MQCfMAQkKWRv3J0"
